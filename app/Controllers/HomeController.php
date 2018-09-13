@@ -2,10 +2,14 @@
 
 namespace App\Controllers;
 
-class HomeController
+use Slim\Views\Twig as View;
+
+class HomeController extends Controller
 {
+
     public function index($request, $response)
     {
-        return 'home controller';
+        //var_dump($request->getParam('n'));
+        return $this->view->render($response, 'home.twig');
     }
 }
