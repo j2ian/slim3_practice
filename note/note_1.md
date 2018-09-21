@@ -20,7 +20,7 @@
     ├── composer.json       套件管理
     └──  .htaccess          Internal redirect to the public/ directory
 
-## public/index.php
+## /public/index.php
     require __DIR__ . '/../bootstrap/app.php';
     $app->run();
 

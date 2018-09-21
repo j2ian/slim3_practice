@@ -24,3 +24,28 @@
     }
 
 $request->getParam('get名稱')
+
+### 改寫繼承
+#### app/Controllers/HomeController.php
+    class HomeController extends Controller
+    
+#### app/Controllers/HomeController.php
+    namespace App\Controllers;
+
+    class Controller
+    {
+        protected $container;
+        public function __construct($container)
+        {
+            $this->container = $container;
+        }
+
+        public function __get($property)
+        {
+            if ($this->container->{$property}) {
+                return $this->container->{$property};
+            }
+        }
+
+    }
+
