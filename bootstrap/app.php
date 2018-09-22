@@ -30,15 +30,19 @@ $capsule->addConnection($container['settings']['db']);
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
-// add Illuminate package
+//註冊資料庫
 $container['db'] = function ($container) use ($capsule) {
     return $capsule;
 };
-
+//註冊Auth
 $container['auth'] = function ($container) {
     return new \App\Auth\Auth;
 };
-
+//flash message
+$container['flash'] = function () {
+    return new \Slim\Flash\Messages();
+};
+//註冊view
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig(__DIR__ . '/../resources/views', [
         'cache' => false,
@@ -51,18 +55,23 @@ $container['view'] = function ($container) {
         'check' => $container->auth->check(),
         'user' => $container->auth->user(),
     ]);
+
+    $view->getEnvironment()->addGlobal('flash', $container->flash);
     return $view;
 };
-
+//資料驗證
 $container['validator'] = function ($container) {
     return new App\Validation\Validator;
 };
-
+//csrf驗證
 $container['csrf'] = function ($container) {
     return new \Slim\Csrf\Guard;
 };
 
 
+/**
+ * Controller
+ */
 
 $container['HomeController'] = function ($container) {
     return new \App\Controllers\HomeController($container);

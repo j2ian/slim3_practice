@@ -26,8 +26,9 @@ class AuthController extends Controller
             $request->getParam('email'),
             $request->getParam('password')
         );
-        var_dump($auth);
+
         if (!$auth) {
+            $this->flash->addMessage('error', '登入失敗!帳號或密碼錯誤');
             return $response->withRedirect($this->router->pathFor('auth.signin'));
         }
         return $response->withRedirect($this->router->pathFor('home'));
@@ -56,6 +57,7 @@ class AuthController extends Controller
             'password' => password_hash($request->getParam('password'), PASSWORD_DEFAULT),
         ]);
 
+        $this->flash->addMessage('success', '您已成功註冊並且登入');
         //註冊後自動登入
         $this->auth->attempt($user->email, $request->getParam('password'));
 
