@@ -15,8 +15,8 @@ class Validator
                 $rule->setName(ucfirst($field))->assert($request->getParam($field));
             } catch (NestedValidationException $e) {
                 $errors = $e->findMessages([
-                    'notEmpty'     => '{{name}} 必填欄位',
-                    'noWhitespace' => '{{name}} 不能包含空白格',
+                    'notEmpty' => '此為必填欄位',
+                    'noWhitespace' => '這個欄位不能包含空白格',
                 ]);
                 $this->errors[$field] = $e->getMessages();
             }

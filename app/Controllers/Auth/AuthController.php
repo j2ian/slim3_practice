@@ -13,6 +13,7 @@ class AuthController extends Controller
     public function getSignOut($request, $response)
     {
         $this->auth->logout();
+        $this->flash->addMessage('info', '您已經登出');
         return $response->withRedirect($this->router->pathFor('home'));
 
     }
@@ -31,6 +32,7 @@ class AuthController extends Controller
             $this->flash->addMessage('error', '登入失敗!帳號或密碼錯誤');
             return $response->withRedirect($this->router->pathFor('auth.signin'));
         }
+        $this->flash->addMessage('success', '您已登入');
         return $response->withRedirect($this->router->pathFor('home'));
 
     }
