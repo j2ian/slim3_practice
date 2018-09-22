@@ -1,4 +1,8 @@
 <?php
+
+use Respect\Validation\Validator as v;
+
+
 session_start();
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -46,10 +50,26 @@ $container['validator'] = function ($container) {
 	return new App\Validation\Validator;
 };
 
+$container['csrf'] = function($container){
+	return new \Slim\Csrf\Guard;
+};
+
 $container['HomeController'] = function ($container) {
     return new \App\Controllers\HomeController($container);
 };
 $container['AuthController'] = function ($container) {
     return new \App\Controllers\Auth\AuthController($container);
 };
+/*
+*   Middleware
+*/
+$app->add(new \App\Middleware\ValidationErrorsMiddleware($container));
+$app->add(new \App\Middleware\OldInputMiddleware($container));
+
+//csrf check
+$app->add($container->csrf);
+
+v::with('App\\Validation\\Rules\\');
+
+
 require __DIR__ . '/../app/routes.php';
