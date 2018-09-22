@@ -10,14 +10,14 @@ $app = new \Slim\App([
     'settings' => [
         'displayErrorDetails' => true, //顯示錯誤
         'db' => [
-			'driver' 	=> 'mysql',
-			'host' 		=> 'localhost',
-			'database' 	=> 'slim3',
-			'username' 	=> 'root',
-			'password' 	=> '123456',
-			'charset' 	=> 'utf8',
-			'collation'	=> 'utf8_unicode_ci',
-			'prefix'	=> '',
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'database' => 'slim3',
+            'username' => 'root',
+            'password' => '123456',
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
         ]
     ],
 ]);
@@ -31,8 +31,12 @@ $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
 // add Illuminate package
-$container['db'] = function ($container) use ($capsule){
-	return $capsule;
+$container['db'] = function ($container) use ($capsule) {
+    return $capsule;
+};
+
+$container['auth'] = function ($container) {
+    return new \App\Auth\Auth;
 };
 
 $container['view'] = function ($container) {
@@ -43,16 +47,22 @@ $container['view'] = function ($container) {
         $container->router,
         $container->request->getUri()
     ));
+    $view->getEnvironment()->addGlobal('auth', [
+        'check' => $container->auth->check(),
+        'user' => $container->auth->user(),
+    ]);
     return $view;
 };
 
 $container['validator'] = function ($container) {
-	return new App\Validation\Validator;
+    return new App\Validation\Validator;
 };
 
-$container['csrf'] = function($container){
-	return new \Slim\Csrf\Guard;
+$container['csrf'] = function ($container) {
+    return new \Slim\Csrf\Guard;
 };
+
+
 
 $container['HomeController'] = function ($container) {
     return new \App\Controllers\HomeController($container);
@@ -61,10 +71,11 @@ $container['AuthController'] = function ($container) {
     return new \App\Controllers\Auth\AuthController($container);
 };
 /*
-*   Middleware
-*/
+ *   Middleware
+ */
 $app->add(new \App\Middleware\ValidationErrorsMiddleware($container));
 $app->add(new \App\Middleware\OldInputMiddleware($container));
+$app->add(new \App\Middleware\CsrfViewMiddleware($container));
 
 //csrf check
 $app->add($container->csrf);

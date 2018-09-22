@@ -1,0 +1,10 @@
+{
+    //"editor.formatOnSave"            : true,
+    "auto-close-tag.SublimeText3Mode": true,
+    // Set the default
+    "editor.formatOnSave": false,
+    // Enable per-language
+    "[php]": {
+        "editor.formatOnSave": true
+    }
+}
